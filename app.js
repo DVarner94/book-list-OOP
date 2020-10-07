@@ -6,9 +6,9 @@ function Book(title, author, rating) {
 }
 
 // UI Constructor
-function UI() {}
+function UI() { }
 
-UI.prototype.addBookToList = function(book){
+UI.prototype.addBookToList = function (book) {
     const list = document.getElementById('book-list');
     // Creat tr element
     const row = document.createElement('tr');
@@ -23,8 +23,28 @@ UI.prototype.addBookToList = function(book){
     list.appendChild(row)
 }
 
+UI.prototype.showAlert = function (message, className) {
+    // Create Div
+    const div = document.createElement('div')
+    // Add classes
+    div.className = `alert ${className}`;
+    // Add text
+    div.appendChild(document.createTextNode(message));
+    //Get parent
+    const container = document.querySelector('.container');
+    // Get Form
+    const form = document.querySelector('#book-form');
+    // Insert Alert
+    container.insertBefore(div, form);
+
+    // Timeout after 3 sec
+    setTimeout(function () {
+        document.querySelector('.alert').remove();
+    }, 3000)
+}
+
 // Clear Fields
-UI.prototype.clearFields = function(){
+UI.prototype.clearFields = function () {
     document.getElementById('title').value = '';
     document.getElementById('author').value = '';
     document.getElementById('rating').value = '';
@@ -43,12 +63,22 @@ document.getElementById('book-form').addEventListener('submit',
         // Instantiate UI
         const ui = new UI();
 
-        // Add book to list
-        ui.addBookToList(book)
+        // Validate
+        if (title === '' || author === '' || rating === '') {
+            ui.showAlert('Please fill out all fields')
+        } else {
+            // Add book to list
+            ui.addBookToList(book)
 
-        // Clear Fields
-        ui.clearFields();
+            // Show success
+            ui.showAlert('Book Added!', 'success');
 
-        
+            // Clear Fields
+            ui.clearFields();
+        }
+
+
+
+
         e.preventDefault()
     })
