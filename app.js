@@ -6,7 +6,7 @@ function Book(title, author, rating) {
 }
 
 // UI Constructor
-function UI() { }
+function UI() {}
 
 UI.prototype.addBookToList = function (book) {
     const list = document.getElementById('book-list');
