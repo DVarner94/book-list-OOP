@@ -13,10 +13,10 @@ class UI {
         const row = document.createElement('tr');
         // Insert columns
         row.innerHTML = `
-        <td>${book.title}</td>
-        <td>${book.author}</td>
-        <td>${book.rating}</td>
-        <td><a href="" class = "delete">x</a></td>
+            <td>${book.title}</td>
+            <td>${book.author}</td>
+            <td>${book.rating}</td>
+            <td><a href="#" class ="delete">Delete</a></td>
         `;
 
         list.appendChild(row)
@@ -42,7 +42,7 @@ class UI {
         }, 3000)
     }
 
-    deleteBook() {
+    deleteBook(target) {
         if (target.className === 'delete') {
             target.parentElement.parentElement.remove();
         }
@@ -57,60 +57,98 @@ class UI {
 
 // Local Storage Class
 class Store {
-    displayBooks(){
+    static getBooks() {
+        let books;
+        if (localStorage.getItem('books') === null) {
+            books = [];
+        } else {
+            books = JSON.parse(localStorage.getItem('books'));
+        }
 
+        return books;
     }
 
-    addBook(){
-        
+    static displayBooks() {
+        const books = Store.getBooks();
+
+        books.forEach(function (book) {
+            const ui = new UI;
+
+            // Add book to UI
+            ui.addBookToList(book);
+        });
+    }
+
+    static addBook(book) {
+        const books = Store.getBooks();
+
+        books.push(book);
+
+        localStorage.setItem('books', JSON.stringify(books))
+    }
+
+    static removeBook(rating) {
+        const books = Store.getBooks();
+
+        books.forEach(function (book, rating) {
+            if (book.rating === rating) {
+                books.splice(index, 1);
+            }
+        });
+
+        localStorage.setItem('books', JSON.stringify(books))
     }
 }
 
+// DOM load event
+document.addEventListener('DOMContentLoaded', Store.displayBooks)
+
 // Event Listeners
-document.getElementById('book-form').addEventListener('submit',
-    function (e) {
-        const title = document.getElementById('title').value,
-            author = document.getElementById('author').value,
-            rating = document.getElementById('rating').value
+document.getElementById('book-form').addEventListener('submit', function (e) {
+    const title = document.getElementById('title').value,
+        author = document.getElementById('author').value,
+        rating = document.getElementById('rating').value
 
-        // Instantiate book
-        const book = new Book(title, author, rating);
-
-        // Instantiate UI
-        const ui = new UI();
-
-        // Validate
-        if (title === '' || author === '' || rating === '') {
-            ui.showAlert('Please fill out all fields', 'error')
-        } else {
-            // Add book to list
-            ui.addBookToList(book)
-
-            // Show success
-            ui.showAlert('Book Added!', 'success');
-
-            // Clear Fields
-            ui.clearFields();
-        }
-
-
-
-
-        e.preventDefault()
-    })
-
-// Event listener for delete
-document.getElementById('book-list').addEventListener('cick', function (e) {
+    // Instantiate book
+    const book = new Book(title, author, rating);
 
     // Instantiate UI
-    const ui = UI();
+    const ui = new UI();
+
+    // Validate
+    if (title === '' || author === '' || rating === '') {
+        ui.showAlert('Please fill out all fields', 'error')
+    } else {
+        // Add book to list
+        ui.addBookToList(book);
+
+        // Add to local storage
+        Store.addBook(book)
+
+        // Show success
+        ui.showAlert('Book Added!', 'success');
+
+        // Clear Fields
+        ui.clearFields();
+    }
+
+    e.preventDefault()
+});
+
+// Event listener for delete
+document.getElementById('book-list').addEventListener('click', function (e) {
+
+    // Instantiate UI
+    const ui = new UI();
 
     // Delete Book
     ui.deleteBook(e.target);
 
+    // Remove from Local Storage
+    Store.removeBook(e.target.parentElement.previousElementSibling.textContent);
+
     // Show Message
     ui.showAlert('Book Removed', 'success')
-
 
     e.preventDefault();
 })
