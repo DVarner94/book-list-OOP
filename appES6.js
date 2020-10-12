@@ -55,6 +55,17 @@ class UI {
     }
 }
 
+// Local Storage Class
+class Store {
+    displayBooks(){
+
+    }
+
+    addBook(){
+        
+    }
+}
+
 // Event Listeners
 document.getElementById('book-form').addEventListener('submit',
     function (e) {
@@ -70,7 +81,7 @@ document.getElementById('book-form').addEventListener('submit',
 
         // Validate
         if (title === '' || author === '' || rating === '') {
-            ui.showAlert('Please fill out all fields')
+            ui.showAlert('Please fill out all fields', 'error')
         } else {
             // Add book to list
             ui.addBookToList(book)
