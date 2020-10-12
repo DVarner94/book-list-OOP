@@ -6,7 +6,7 @@ function Book(title, author, rating) {
 }
 
 // UI Constructor
-function UI() {}
+function UI() { }
 
 UI.prototype.addBookToList = function (book) {
     const list = document.getElementById('book-list');
@@ -30,7 +30,7 @@ UI.prototype.showAlert = function (message, className) {
     div.className = `alert ${className}`;
     // Add text
     div.appendChild(document.createTextNode(message));
-    //Get parent
+    // Get parent
     const container = document.querySelector('.container');
     // Get Form
     const form = document.querySelector('#book-form');
@@ -72,7 +72,7 @@ document.getElementById('book-form').addEventListener('submit',
 
         // Validate
         if (title === '' || author === '' || rating === '') {
-            ui.showAlert('Please fill out all fields')
+            ui.showAlert('Please fill out all fields', 'error')
         } else {
             // Add book to list
             ui.addBookToList(book)
